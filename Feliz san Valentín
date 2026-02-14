@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galaxy of Love</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow:hidden;height:100%;background:#000;font-family:Georgia,serif}
+.webgl{position:fixed;top:0;left:0;width:100%;height:100%}
+
+.heart{position:absolute;color:rgba(255,100,100,.15);font-size:24px;animation:float 15s infinite ease-in-out;pointer-events:none}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+
+.instructions{position:fixed;top:20px;left:50%;transform:translateX(-50%);color:#fff;background:rgba(0,0,0,.4);padding:8px 16px;border-radius:20px;z-index:10}
+.credits{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);color:#fff;font-family:'Pacifico',cursive;font-size:16px;z-index:10}
+</style>
+</head>
+
+<body>
+
+<canvas class="webgl"></canvas>
+<div class="instructions">Te Amo Muchisísimo</div>
+<div class="credits">Kiri</div>
+
+<audio id="bg-music" loop>
+<source src="https://github.com/Gon-p/G-/raw/refs/heads/main/adore%20-%20_did%20i%20tell%20u%20that%20i%20miss%20u_%20(lyric%20video).m4a" type="audio/mpeg">
+</audio>
+
+<script type="module">
+import * as THREE from "https://cdn.skypack.dev/three@0.132.2";
+import { OrbitControls } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js";
+
+function createCSSHearts(){
+const hearts=['💛','👸','🌷','💜','😘','👑'];
+for(let i=0;i<30;i++){
+const h=document.createElement("div");
+h.className="heart";
+h.textContent=hearts[Math.floor(Math.random()*hearts.length)];
+h.style.left=Math.random()*100+"%";
+h.style.top=Math.random()*100+"%";
+document.body.appendChild(h);
+}}
+createCSSHearts();
+
+const canvas=document.querySelector("canvas.webgl");
+const scene=new THREE.Scene();
+
+const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,200);
+camera.position.set(8,5,8);
+scene.add(camera);
+
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+
+const controls=new OrbitControls(camera,canvas);
+controls.autoRotate=true;
+controls.autoRotateSpeed=.4;
+controls.enableDamping=true;
+
+const geometry=new THREE.TorusGeometry(3,1,100,200);
+const material=new THREE.PointsMaterial({color:0xff00ff,size:.02});
+const heart=new THREE.Points(geometry,material);
+scene.add(heart);
+
+const clock=new THREE.Clock();
+function animate(){
+controls.update();
+renderer.render(scene,camera);
+requestAnimationFrame(animate);
+}
+animate();
+
+window.addEventListener("resize",()=>{
+camera.aspect=innerWidth/innerHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(innerWidth,innerHeight);
+});
+</script>
+
+<script>
+document.addEventListener("click",()=>{
+const audio=document.getElementById("bg-music");
+audio.volume=0.4;
+audio.play().catch(()=>{});
+},{once:true});
+</script>
+
+</body>
+</html>
